@@ -1,0 +1,36 @@
+---
+title: "Parametrized Rmarkdown Test"
+author: "Peter von Rohr"
+date: "4/21/2020"
+output: pdf_document
+params:
+  data: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Disclaimer
+This Rmarkdown document shows the use of parametrized Rmarkdown. The parameters are passed in a list called `params`. The example is taken from https://rmarkdown.rstudio.com/developer_parameterized_reports.html%23parameter_types%2F and from https://bookdown.org/yihui/rmarkdown-cookbook/parameterized-reports.html. 
+
+
+## Boxplot
+We read a dataset from a file that is passed via a parameter to this Rmd-document. The data is then used to construct a boxplot.
+
+```{r read-data}
+s_data_path <- params$data
+if (!file.exists(s_data_path)) stop(" * ERROR: cannot file data file: ", s_data_path)
+tbl_data <- readr::read_csv(file = s_data_path)
+tbl_data$year_season <- as.factor(tbl_data$year_season)
+```
+
+The boxplot is created with
+
+```{r}
+require(dplyr)
+require(ggplot2)
+ggplot(tbl_data, aes(x = year_season, y = trait_value)) +
+  geom_boxplot()
+```
+
